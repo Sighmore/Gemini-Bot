@@ -8,6 +8,7 @@ import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import inoxoft.simon.geminichat.model.Constants
 import inoxoft.simon.geminichat.model.MessageModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ChatViewModel : ViewModel(){
@@ -45,8 +46,9 @@ val generativeModel : GenerativeModel = GenerativeModel(
                 messageList.removeLast()
                 messageList.add(MessageModel(response.text.toString(),"model"))//adding response to the list
             }catch (e: Exception){
+                delay(2000L)
                 messageList.removeLast()
-                messageList.add(MessageModel("Check your connection"+e.message.toString(),"model"))
+                messageList.add(MessageModel("Check your connection \n"+e.message.toString(),"model"))
             }
  }
 

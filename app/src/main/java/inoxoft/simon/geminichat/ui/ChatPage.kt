@@ -147,7 +147,7 @@ fun MessageRow(messageModel: MessageModel){
                     )
                     .padding(
                         start = if (isModel) 8.dp else 70.dp,
-                        end = if (isModel) 40.dp else 8.dp,
+                        end = if (isModel) 70.dp else 8.dp,
                         top = 8.dp,
                         bottom = 8.dp
                     )
