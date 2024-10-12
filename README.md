@@ -20,6 +20,17 @@ Gemini Bot is a mobile application built using Android Studio and Kotlin. The ap
 - **Responsive UI:** Clean and dynamic UI powered by Jetpack Compose.
 - **Easy Extensibility:** Simple to extend the bot’s behavior with new features and commands.
 
+## UI
+
+![symondroid UI](https://github.com/user-attachments/assets/ff18eb3b-be2c-4d1b-ad95-4fb77a0f0d8f)  ![typing state](https://github.com/user-attachments/assets/0674ae5a-6ca0-4360-9f5b-e5d04fd5f24c)
+
+![conversation with the bot](https://github.com/user-attachments/assets/0060243c-145c-4ad7-81b0-f54de0174f13)  ![netwoek isues](https://github.com/user-attachments/assets/687ac1fd-b964-4b22-8c4e-20e0c7064dbe)
+
+
+
+
+
+
 ## Tech Stack
 
 - **Kotlin**: The primary language for Android development.
