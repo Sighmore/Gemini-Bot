@@ -1,16 +1,20 @@
 package inoxoft.simon.geminichat.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,19 +30,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inoxoft.simon.geminichat.R
 import inoxoft.simon.geminichat.model.MessageModel
+import inoxoft.simon.geminichat.ui.theme.Purple80
 import inoxoft.simon.geminichat.ui.theme.modelColor
 import inoxoft.simon.geminichat.ui.theme.userColor
 import inoxoft.simon.geminichat.viewmodel.ChatViewModel
 
 @Composable
 fun ChatPage(modifier: Modifier = Modifier,viewModel: ChatViewModel){
-    Column(modifier = Modifier) {
+    Column(modifier = modifier) {
         AppHeader()
-        MessageList(modifier=Modifier.weight(1F), messageList = viewModel.messageList)
+        MessageList(modifier=Modifier.weight(1f), messageList = viewModel.messageList)
         MessageInput(
             onMessageSend = {
                 //calling the chatViewmodel instance to send the message to gemini generative ai
@@ -53,11 +60,11 @@ fun ChatPage(modifier: Modifier = Modifier,viewModel: ChatViewModel){
 fun AppHeader(){
     Box(modifier = Modifier
         .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.primary),
+        .background(userColor),
         contentAlignment = Alignment.Center){
         Text(modifier = Modifier
             .padding(16.dp),
-            text = "Gemini",
+            text = "SymonDroid",
             color = Color.White,
             fontSize = 22.sp
 
@@ -78,14 +85,21 @@ fun MessageInput(onMessageSend: (String)-> Unit){
         verticalAlignment = Alignment.CenterVertically
     ){
 
+       IconButton(onClick = {
+       }){
+           Icon(painter = painterResource(id = R.drawable.baseline_attach_file_24), contentDescription = "Attach image")
+       }
+
         OutlinedTextField(modifier = Modifier
             .weight(1F),
             value = message,
             onValueChange = { message = it }
         )
         IconButton(onClick = {
-            onMessageSend(message)
-            message=""
+            if(message.isNotEmpty()){
+                onMessageSend(message)
+                message=""
+            }
         }) {
 
             Icon(imageVector = Icons.Default.Send, contentDescription = "Send prompt")
@@ -98,12 +112,24 @@ fun MessageInput(onMessageSend: (String)-> Unit){
 @Composable
 fun MessageList(modifier: Modifier=Modifier,messageList: List<MessageModel>){
 
-    LazyColumn (
-        modifier = Modifier,
-        reverseLayout = true
-    ){
-        items(messageList.reversed()){
-            MessageRow(messageModel = it)
+    if (messageList.isEmpty()){
+        Column (modifier=modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center){
+            Icon(modifier = Modifier.size(60.dp),
+                painter = painterResource(id = R.drawable.baseline_auto_stories_24),
+                contentDescription = "Empty conversation",
+                tint = Purple80
+                )
+            Text(text = "Ask Symondroid anything")
+        }
+    }else{
+        LazyColumn (
+            modifier = modifier,
+            reverseLayout = true
+        ){
+            items(messageList.reversed()){
+                MessageRow(messageModel = it)
+            }
         }
     }
 }
@@ -121,7 +147,7 @@ fun MessageRow(messageModel: MessageModel){
                     )
                     .padding(
                         start = if (isModel) 8.dp else 70.dp,
-                        end = if (isModel) 70.dp else 8.dp,
+                        end = if (isModel) 40.dp else 8.dp,
                         top = 8.dp,
                         bottom = 8.dp
                     )
@@ -129,8 +155,10 @@ fun MessageRow(messageModel: MessageModel){
                     .background(if (isModel) modelColor else userColor)
                     .padding(16.dp)
             ){
-                Text(text = messageModel.message, fontWeight = FontWeight.W500, color = Color.White)
-            }
+                SelectionContainer {
+                    Text(text = messageModel.message, fontWeight = FontWeight.W500, color = Color.White)
+                }
+                 }
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.content
 import inoxoft.simon.geminichat.model.Constants
 import inoxoft.simon.geminichat.model.MessageModel
 import kotlinx.coroutines.launch
@@ -27,14 +28,27 @@ val generativeModel : GenerativeModel = GenerativeModel(
 
         //calling inside a coroutine since it takes more time and may block the main thread
         viewModelScope.launch {
+            try {
 
-            //variables that store the sent message
-            val chat = generativeModel.startChat()
-            messageList.add(MessageModel(question,"user"))//adding the quiz to the list
-            //variables that store the received outcome from the ai
-            val response =chat.sendMessage(question)
-            messageList.add(MessageModel(response.text.toString(),"model"))//adding response to the list
-        }
+                //variables that store the sent message
+                val chat = generativeModel.startChat(
+                    history = messageList.map {
+                        content(it.role){
+                            text(it.message)
+                        }
+                    }.toList()
+                )
+                messageList.add(MessageModel(question,"user"))//adding the quiz to the list
+                messageList.add(MessageModel("Typing...","model"))
+                //variables that store the received outcome from the ai
+                val response =chat.sendMessage(question)
+                messageList.removeLast()
+                messageList.add(MessageModel(response.text.toString(),"model"))//adding response to the list
+            }catch (e: Exception){
+                messageList.removeLast()
+                messageList.add(MessageModel("Check your connection"+e.message.toString(),"model"))
+            }
+ }
 
     }
 
